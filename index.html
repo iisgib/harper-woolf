@@ -510,15 +510,45 @@
       background: var(--hw-ivory);
       overflow: hidden;
     }
-    .video-scrub-stage video {
+    .video-scrub-stage video,
+    .video-scrub-stage img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
     }
     @media (prefers-reduced-motion: reduce) {
       .video-scrub-wrap  { height: auto; }
       .video-scrub-stage { position: static; height: auto; }
+    }
+
+    /* ── Mobile dish (replaces video scrub on small screens) ── */
+    .mobile-dish {
+      display: none;
+      overflow: hidden;
+      height: 60vw;
+      max-height: 85vh;
+    }
+    .mobile-dish img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform-origin: center;
+    }
+    @keyframes dish-zoom {
+      from { transform: scale(1); }
+      to   { transform: scale(1.08); }
+    }
+    .mobile-dish.in-view img {
+      animation: dish-zoom 3s ease-out forwards;
+    }
+    @media (max-width: 900px) {
+      .video-scrub-wrap { display: none; }
+      .mobile-dish { display: block; }
+    }
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+      .mobile-dish.in-view img { animation: none; }
     }
   </style>
 </head>
@@ -570,17 +600,24 @@
   </p>
 </section>
 
-<!-- ── Video scrub ── -->
+<!-- ── Video scrub (desktop) ── -->
 <div class="video-scrub-wrap" id="video-scrub-wrap" aria-hidden="true">
   <div class="video-scrub-stage">
     <video
       id="burst-video"
       src="assets/burst.mp4"
       muted
+      autoplay
       playsinline
+      webkit-playsinline
       preload="auto"
     ></video>
   </div>
+</div>
+
+<!-- ── Mobile dish image ── -->
+<div class="mobile-dish" aria-hidden="true">
+  <img src="assets/dish.jpg" alt="" loading="lazy">
 </div>
 
 <!-- ── 2. About ── -->
@@ -745,45 +782,99 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // ── Video scroll-scrub ──
+  // ── Mobile dish: zoom when entering viewport ──
   (function () {
-    const wrap  = document.getElementById('video-scrub-wrap');
-    const video = document.getElementById('burst-video');
+    var el = document.querySelector('.mobile-dish');
+    if (!el || !window.IntersectionObserver) return;
+    new IntersectionObserver(function (entries, obs) {
+      if (entries[0].isIntersecting) {
+        el.classList.add('in-view');
+        obs.disconnect();
+      }
+    }, { threshold: 0.15 }).observe(el);
+  })();
+
+  // ── Video scroll-scrub (desktop only) ──
+  (function () {
+    // CSS hides the video wrap on mobile; bail here too so the video never loads.
+    if (window.matchMedia('(max-width: 900px)').matches) return;
+
+    var wrap  = document.getElementById('video-scrub-wrap');
+    var video = document.getElementById('burst-video');
     if (!wrap || !video) return;
 
-    // Keep video paused — we drive currentTime manually
-    video.pause();
-
-    var raf = null;
-    var targetTime = 0;
+    var stage = wrap.querySelector('.video-scrub-stage');
+    var raf = null, targetTime = 0, settled = false;
 
     function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
+    // Replace video with a static dish image and collapse the scroll zone.
+    function showFallback() {
+      if (settled) return;
+      settled = true;
+      wrap.style.height = 'auto';
+      if (stage) stage.style.position = 'static';
+      var img = document.createElement('img');
+      img.src = 'assets/dish.jpg';
+      img.alt = '';
+      if (video.parentNode) video.parentNode.replaceChild(img, video);
+    }
+
+    // Scrubbing confirmed — wire up scroll handler.
+    function initScrub() {
+      if (settled) return;
+      settled = true;
+      video.currentTime = 0;
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+
     function applyTime() {
       raf = null;
-      if (video.readyState >= 2) { // HAVE_CURRENT_DATA
-        video.currentTime = targetTime;
-      }
+      if (video.readyState >= 2) video.currentTime = targetTime;
     }
 
     function onScroll() {
       if (!video.duration) return;
-
-      var rect     = wrap.getBoundingClientRect();
-      var total    = wrap.offsetHeight - window.innerHeight;
-      var progress = clamp(-rect.top / total, 0, 1);
-
-      targetTime = progress * video.duration;
-
-      // Throttle via rAF so we don't hammer currentTime every pixel
+      var rect  = wrap.getBoundingClientRect();
+      var total = wrap.offsetHeight - window.innerHeight;
+      targetTime = clamp(-rect.top / total, 0, 1) * video.duration;
       if (!raf) raf = requestAnimationFrame(applyTime);
     }
 
-    // Scrub to frame 0 once metadata is ready, then bind scroll
+    // autoplay triggers data loading on iOS; pause immediately so no frame plays.
+    video.addEventListener('play', function onPlay() {
+      video.removeEventListener('play', onPlay);
+      video.pause();
+    });
+
+    video.addEventListener('error', function () {
+      clearTimeout(metaTimer);
+      showFallback();
+    });
+
+    // Fall back if metadata never arrives (iOS ignores preload without autoplay).
+    var metaTimer = setTimeout(showFallback, 5000);
+
     video.addEventListener('loadedmetadata', function () {
-      video.currentTime = 0;
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+      clearTimeout(metaTimer);
+
+      // Verify seeking actually works: try a tiny seek and wait for seeked.
+      // iOS may have metadata but no buffered frames — seeked timeout reveals this.
+      var seekTimer = setTimeout(showFallback, 1500);
+
+      video.addEventListener('seeked', function onSeeked() {
+        clearTimeout(seekTimer);
+        video.removeEventListener('seeked', onSeeked);
+        initScrub();
+      });
+
+      try {
+        video.currentTime = 0.001;
+      } catch (e) {
+        clearTimeout(seekTimer);
+        showFallback();
+      }
     });
   })();
 </script>
