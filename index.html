@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Harper Woolf — Rīga</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Harper Woolf — A fine dining house in Old Town Rīga. Twelve courses, forty seats, one service a night.">
+  <link rel="stylesheet" href="colors_and_type.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--hw-ivory);
+      color: var(--hw-fg);
+      font-family: var(--hw-font-body);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 56px;
+      z-index: 100;
+      transition: background var(--hw-dur-2) var(--hw-ease),
+                  padding var(--hw-dur-2) var(--hw-ease),
+                  box-shadow var(--hw-dur-2) var(--hw-ease);
+    }
+    .nav.scrolled {
+      background: rgba(251, 247, 241, 0.82);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      padding: 14px 56px;
+      box-shadow: 0 1px 0 var(--hw-border);
+    }
+    .nav-mark img {
+      height: 30px;
+      width: auto;
+      transition: height var(--hw-dur-2) var(--hw-ease);
+    }
+    .nav.scrolled .nav-mark img { height: 24px; }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+    .nav-link {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--hw-fg);
+      text-decoration: none;
+      padding-bottom: 4px;
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--hw-dur-1) var(--hw-ease);
+    }
+    .nav-link:hover { border-bottom-color: var(--hw-rose-500); }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 32px 96px;
+      background:
+        radial-gradient(ellipse 60% 50% at 85% 20%, rgba(217,162,134,0.18), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 15% 80%, rgba(247,228,216,0.55), transparent 65%),
+        var(--hw-ivory);
+      overflow: hidden;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--hw-rose-500);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: fade-up var(--hw-dur-3) var(--hw-ease) 200ms forwards;
+    }
+    .rule {
+      width: 36px;
+      height: 1px;
+      background: var(--hw-rose-500);
+      opacity: 0.6;
+    }
+    .hero-logo {
+      width: clamp(280px, 36vw, 460px);
+      height: auto;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fade-up var(--hw-dur-3) var(--hw-ease) 400ms forwards;
+    }
+    .hero-headline {
+      font-family: var(--hw-font-display);
+      font-weight: 400;
+      font-size: clamp(48px, 6.4vw, 96px);
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+      color: var(--hw-fg);
+      text-align: center;
+      margin: 16px 0 8px;
+      max-width: 14ch;
+      opacity: 0;
+      animation: fade-up var(--hw-dur-3) var(--hw-ease) 600ms forwards;
+    }
+    .hero-headline em {
+      font-family: var(--hw-font-script);
+      font-style: normal;
+      font-weight: 400;
+      color: var(--hw-rose-500);
+      font-size: 0.828em;
+      line-height: 0.85;
+      opacity: 0.85;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-synthesis: none;
+    }
+    .hero-lede {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--hw-fg-2);
+      text-align: center;
+      max-width: 480px;
+      margin: 16px 0 0;
+      opacity: 0;
+      animation: fade-up var(--hw-dur-3) var(--hw-ease) 800ms forwards;
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-eyebrow, .hero-logo, .hero-headline, .hero-lede {
+        animation: none;
+        opacity: 1;
+      }
+    }
+
+    /* ── Shared section ── */
+    .section {
+      padding: 128px 56px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--hw-rose-500);
+    }
+    .h2 {
+      font-family: var(--hw-font-display);
+      font-weight: 400;
+      font-size: clamp(40px, 5vw, 72px);
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      color: var(--hw-fg);
+      margin: 16px 0 0;
+    }
+    .h2 em {
+      font-family: var(--hw-font-script);
+      font-style: normal;
+      font-weight: 400;
+      color: var(--hw-rose-500);
+      font-size: 0.864em;
+      line-height: 0.85;
+      opacity: 0.85;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-synthesis: none;
+    }
+    .lede {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--hw-fg-2);
+      margin-top: 24px;
+    }
+    .body-text {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--hw-fg-2);
+      margin-top: 16px;
+    }
+
+    /* ── Primary button ── */
+    .btn-primary {
+      font-family: var(--hw-font-body);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding: 18px 40px;
+      border-radius: var(--hw-r-pill);
+      border: none;
+      background: var(--hw-ink);
+      color: var(--hw-ivory);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      transition: background var(--hw-dur-1) var(--hw-ease),
+                  transform var(--hw-dur-1) var(--hw-ease),
+                  box-shadow var(--hw-dur-1) var(--hw-ease);
+    }
+    .btn-primary:hover {
+      background: var(--hw-rose-500);
+      transform: translateY(-2px);
+      box-shadow: var(--hw-shadow-rose);
+    }
+    .btn-primary:active {
+      transform: scale(0.98) translateY(0);
+    }
+    .btn-primary svg { stroke: currentColor; flex: none; }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 96px;
+      align-items: center;
+    }
+    .about-img {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: var(--hw-r-sm);
+      overflow: hidden;
+      box-shadow: var(--hw-shadow-3);
+    }
+    .about-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .about-img-cap {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--hw-ivory);
+      background: rgba(26, 22, 20, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      border-radius: var(--hw-r-xs);
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid var(--hw-border);
+    }
+    .stat .n {
+      font-family: var(--hw-font-display);
+      font-size: 56px;
+      line-height: 1;
+      color: var(--hw-rose-500);
+    }
+    .stat .l {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--hw-fg-3);
+      margin-top: 8px;
+    }
+
+    /* ── Menu ── */
+    .menu-sec {
+      background:
+        radial-gradient(ellipse 50% 45% at 50% 50%, rgba(217,162,134,0.10), transparent 70%),
+        var(--hw-cream);
+      padding: 144px 56px;
+    }
+    .menu-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .menu-eyebrow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .menu-eyebrow-row .eyebrow { white-space: nowrap; }
+    .menu-eyebrow-row .rule {
+      width: 48px;
+      height: 1px;
+      background: var(--hw-rose-500);
+      opacity: 0.6;
+    }
+    .menu-h2 { margin: 24px 0 0; }
+    .menu-script {
+      font-family: var(--hw-font-script);
+      font-weight: 400;
+      font-size: clamp(25.9px, 3.24vw, 40.3px);
+      color: var(--hw-rose-500);
+      line-height: 1;
+      margin-top: 28px;
+      opacity: 0.85;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-synthesis: none;
+    }
+    .menu-meta {
+      margin-top: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--hw-fg-3);
+    }
+    .menu-cta { margin-top: 48px; }
+
+    /* ── Contact ── */
+    .contact-sec {
+      background: var(--hw-ink);
+      color: var(--hw-fg-on-dark);
+      padding: 128px 56px;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 80px;
+      align-items: stretch;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .contact-side .eyebrow { color: var(--hw-rose-300); }
+    .contact-side .h2 { color: var(--hw-ivory); }
+    .contact-side .lede { color: var(--hw-fg-mute-on-dark); }
+    .contact-list {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--hw-border-on-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .contact-row {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .contact-row svg {
+      color: var(--hw-rose-300);
+      flex: none;
+      margin-top: 2px;
+    }
+    .contact-row-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--hw-fg-mute-on-dark);
+      margin-bottom: 4px;
+    }
+    .contact-row-value {
+      font-family: var(--hw-font-display);
+      font-size: 22px;
+      color: var(--hw-ivory);
+      line-height: 1.3;
+    }
+    .contact-row-value a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid var(--hw-border-on-dark);
+      transition: border-color var(--hw-dur-1) var(--hw-ease);
+    }
+    .contact-row-value a:hover { border-bottom-color: var(--hw-rose-300); }
+    .contact-hours-note {
+      font-family: var(--hw-font-body);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--hw-fg-mute-on-dark);
+    }
+
+    .map-frame {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      border-radius: var(--hw-r-sm);
+      overflow: hidden;
+      box-shadow: var(--hw-shadow-3);
+    }
+    .map-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      filter: saturate(0.85) contrast(1.02);
+    }
+
+    .footer-base {
+      max-width: 1280px;
+      margin: 64px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--hw-border-on-dark);
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--hw-fg-mute-on-dark);
+    }
+
+    /* ── Floating Book button ── */
+    .float-cta {
+      position: fixed;
+      top: 50%;
+      right: 28px;
+      transform: translateY(-50%);
+      z-index: 200;
+      font-family: var(--hw-font-body);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding: 14px 22px;
+      border-radius: var(--hw-r-pill);
+      border: none;
+      background: var(--hw-rose-500);
+      color: var(--hw-ivory);
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: var(--hw-shadow-rose), 0 8px 20px -8px rgba(26, 22, 20, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: background var(--hw-dur-1) var(--hw-ease),
+                  right var(--hw-dur-1) var(--hw-ease);
+    }
+    .float-cta:hover { background: var(--hw-ink); right: 32px; }
+    .float-cta:active { transform: translateY(-50%) scale(0.98); }
+    .float-cta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--hw-r-pill);
+      background: var(--hw-ivory);
+      opacity: 0.9;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .nav { padding: 16px 24px; }
+      .nav.scrolled { padding: 12px 24px; }
+      .nav-links { gap: 16px; }
+      .nav-link { display: none; }
+      .section { padding: 88px 24px; }
+      .menu-sec { padding: 88px 24px; }
+      .contact-sec { padding: 88px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .footer-base { flex-direction: column; gap: 12px; align-items: center; text-align: center; }
+    }
+    @media (max-width: 720px) {
+      .float-cta {
+        top: auto;
+        bottom: 20px;
+        right: 50%;
+        transform: translate(50%, 0);
+      }
+      .float-cta:hover { right: 50%; }
+      .float-cta:active { transform: translate(50%, 0) scale(0.98); }
+    }
+
+    /* ── Video scrub ── */
+    .video-scrub-wrap {
+      position: relative;
+      height: 300vh; /* scroll zone — JS maps this to video duration */
+    }
+    .video-scrub-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--hw-ivory);
+      overflow: hidden;
+    }
+    .video-scrub-stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .video-scrub-wrap  { height: auto; }
+      .video-scrub-stage { position: static; height: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Book a Table button -->
+<a class="float-cta" href="#contact" aria-label="Book a Table">
+  <span class="dot" aria-hidden="true"></span>
+  Book a Table
+</a>
+
+<!-- ── Navigation ── -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <a class="nav-mark" href="#top" aria-label="Harper Woolf — home">
+    <img src="assets/logo-wordmark.png" alt="Harper Woolf">
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="#menu">Menu</a>
+    <a class="nav-link" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ── 1. Hero ── -->
+<section class="hero" id="top" aria-label="Hero">
+  <div class="hero-eyebrow" aria-hidden="true">
+    <span class="rule"></span>
+    A fine dining house
+    <span class="rule"></span>
+  </div>
+
+  <img
+    class="hero-logo"
+    src="assets/logo-wordmark.png"
+    alt="Harper Woolf"
+    width="460"
+    height="120"
+  >
+
+  <h1 class="hero-headline">
+    A table set for<br>
+    the <em>senses</em>.
+  </h1>
+
+  <p class="hero-lede">
+    Twelve courses, forty seats, one service a night.
+    Seasonal tasting menus and low-intervention wines,
+    in a dining room built for unhurried evenings.
+  </p>
+</section>
+
+<!-- ── Video scrub ── -->
+<div class="video-scrub-wrap" id="video-scrub-wrap" aria-hidden="true">
+  <div class="video-scrub-stage">
+    <video
+      id="burst-video"
+      src="assets/burst.mp4"
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
+</div>
+
+<!-- ── 2. About ── -->
+<section class="section" id="about" aria-label="About us">
+  <div class="about-grid">
+    <div class="about-img">
+      <img
+        src="assets/photo-desserts.jpg"
+        alt="Harper Woolf — candlelit dining room"
+        loading="lazy"
+      >
+      <div class="about-img-cap" aria-hidden="true">The Dining Room</div>
+    </div>
+
+    <div class="about-text">
+      <div class="eyebrow">Our Story</div>
+      <h2 class="h2">Crafted, <em>by hand</em>,<br>for you.</h2>
+      <p class="lede">
+        Harper Woolf opened in 2019 with a single idea: an evening
+        that moves at the pace of a long letter.
+      </p>
+      <p class="body-text">
+        The kitchen sources from forty smallholdings across Vidzeme
+        and Kurzeme — root vegetables in the cellar through March,
+        langoustine from the Gulf in May, lamb at midsummer. The
+        menu changes when the weather does. The dining room, set
+        beneath vaulted ceilings in the heart of Old Town, holds
+        forty guests for a single, unhurried service.
+      </p>
+      <div class="about-stats" aria-label="At a glance">
+        <div class="stat">
+          <div class="n" aria-label="12">12</div>
+          <div class="l">Courses</div>
+        </div>
+        <div class="stat">
+          <div class="n" aria-label="40">40</div>
+          <div class="l">Seats</div>
+        </div>
+        <div class="stat">
+          <div class="n" aria-label="Est. 2019">'19</div>
+          <div class="l">Est.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 3. Menu ── -->
+<section class="menu-sec" id="menu" aria-label="Menu">
+  <div class="menu-inner">
+    <div class="menu-eyebrow-row" aria-hidden="true">
+      <span class="rule"></span>
+      <span class="eyebrow">The Menu</span>
+      <span class="rule"></span>
+    </div>
+    <h2 class="h2 menu-h2">A short list,<br>changing weekly.</h2>
+    <div class="menu-script" aria-hidden="true">Tonight's plates,<br>written this morning.</div>
+    <p class="menu-meta">Updated every Wednesday · PDF · 2 pages</p>
+    <a class="btn-primary menu-cta" href="menu.pdf" target="_blank" rel="noopener noreferrer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="12" y1="18" x2="12" y2="12"/>
+        <polyline points="9 15 12 18 15 15"/>
+      </svg>
+      View the Menu
+    </a>
+  </div>
+</section>
+
+<!-- ── 4. Contact ── -->
+<section class="contact-sec" id="contact" aria-label="Contact and location">
+  <div class="contact-grid">
+    <div class="contact-side">
+      <div class="eyebrow">Find Us</div>
+      <h2 class="h2">We'd be glad<br>to set <em>a place</em><br>for you.</h2>
+      <p class="lede">
+        Reservations open the first of each month for the month
+        ahead. Tell us about allergies or celebrations at booking
+        and the kitchen will plan around you.
+      </p>
+
+      <address class="contact-list" style="font-style:normal;">
+        <div class="contact-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <div>
+            <div class="contact-row-label">Address</div>
+            <div class="contact-row-value">
+              Mazā Pils iela 4<br>
+              Vecrīga, Rīga LV-1050
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/>
+          </svg>
+          <div>
+            <div class="contact-row-label">Phone</div>
+            <div class="contact-row-value">
+              <a href="tel:+37167000000">+371 67 00 00 00</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Z"/>
+            <path d="m22 6-10 7L2 6"/>
+          </svg>
+          <div>
+            <div class="contact-row-label">Email</div>
+            <div class="contact-row-value">
+              <a href="mailto:hello@harperwoolf.lv">hello@harperwoolf.lv</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <div>
+            <div class="contact-row-label">Hours</div>
+            <div class="contact-row-value">
+              Wed – Sun · 18:30 til late<br>
+              <span class="contact-hours-note">Closed Mon – Tue</span>
+            </div>
+          </div>
+        </div>
+      </address>
+    </div>
+
+    <div class="map-frame">
+      <iframe
+        src="https://www.google.com/maps?q=Maza+Pils+iela+4,+Riga,+Latvia&hl=en&z=16&output=embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Harper Woolf location — Old Town Rīga"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <div class="footer-base">
+    <span>© 2026 Harper Woolf SIA</span>
+    <span>Crafted, by hand, in Rīga.</span>
+  </div>
+</section>
+
+<script>
+  // Sticky nav: adds blur/border after 60px scroll
+  const nav = document.getElementById('nav');
+  function onScroll() {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── Video scroll-scrub ──
+  (function () {
+    const wrap  = document.getElementById('video-scrub-wrap');
+    const video = document.getElementById('burst-video');
+    if (!wrap || !video) return;
+
+    // Keep video paused — we drive currentTime manually
+    video.pause();
+
+    var raf = null;
+    var targetTime = 0;
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function applyTime() {
+      raf = null;
+      if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+        video.currentTime = targetTime;
+      }
+    }
+
+    function onScroll() {
+      if (!video.duration) return;
+
+      var rect     = wrap.getBoundingClientRect();
+      var total    = wrap.offsetHeight - window.innerHeight;
+      var progress = clamp(-rect.top / total, 0, 1);
+
+      targetTime = progress * video.duration;
+
+      // Throttle via rAF so we don't hammer currentTime every pixel
+      if (!raf) raf = requestAnimationFrame(applyTime);
+    }
+
+    // Scrub to frame 0 once metadata is ready, then bind scroll
+    video.addEventListener('loadedmetadata', function () {
+      video.currentTime = 0;
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    });
+  })();
+</script>
+
+</body>
+</html>

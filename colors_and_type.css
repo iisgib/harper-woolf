@@ -1,0 +1,127 @@
+/* =============================================================
+   Harper Woolf — Colors & Type
+   Fine dining · Rīga, Latvia
+   ============================================================= */
+
+/* -----------  Webfonts  -----------
+   Brand body: Montserrat (local TTFs — Thin / Light / ExtraBold provided)
+   Display:    Italiana — Google Fonts
+   Script:     Dancing Script — Google Fonts
+   ============================================================= */
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/Montserrat-Thin.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/Montserrat-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+  src: url('fonts/Montserrat-ExtraBold.ttf') format('truetype');
+}
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Dancing+Script:wght@400&family=Montserrat:wght@400;500&display=swap');
+
+:root {
+  /* ---------- Brand Palette ---------- */
+
+  /* Champagne / Cream — the airy base */
+  --hw-ivory:        #FBF7F1;
+  --hw-cream:        #F4ECDF;
+  --hw-champagne:    #E9DCC4;
+  --hw-sand:         #D9C7A7;
+
+  /* Rose Gold — the logo metal */
+  --hw-rose-50:      #F7E4D8;
+  --hw-rose-100:     #EFC9B4;
+  --hw-rose-300:     #D9A286;
+  --hw-rose-500:     #C58467;
+  --hw-rose-700:     #9B5E45;
+
+  /* Charcoal — the moody contrast */
+  --hw-ink:          #1A1614;
+  --hw-ink-2:        #2C2622;
+  --hw-ink-3:        #4A413B;
+  --hw-ink-4:        #756A60;
+  --hw-mute:         #A89D90;
+
+  /* Accents — pulled from plate photography */
+  --hw-leaf:         #6B7A3A;
+  --hw-pollen:       #E8C24A;
+  --hw-bordeaux:     #5C2230;
+
+  /* ---------- Semantic surfaces ---------- */
+  --hw-bg:           var(--hw-ivory);
+  --hw-bg-elevated:  #FFFFFF;
+  --hw-bg-card:      var(--hw-cream);
+  --hw-bg-dark:      var(--hw-ink);
+
+  --hw-fg:           var(--hw-ink);
+  --hw-fg-2:         var(--hw-ink-3);
+  --hw-fg-3:         var(--hw-ink-4);
+  --hw-fg-on-dark:   var(--hw-ivory);
+  --hw-fg-mute-on-dark: #B9AC9B;
+
+  --hw-border:       rgba(26, 22, 20, 0.10);
+  --hw-border-2:     rgba(26, 22, 20, 0.18);
+  --hw-border-on-dark: rgba(251, 247, 241, 0.14);
+
+  --hw-accent:       var(--hw-rose-500);
+  --hw-accent-soft:  var(--hw-rose-300);
+
+  /* ---------- Spacing scale (8pt) ---------- */
+  --hw-s-1:  4px;
+  --hw-s-2:  8px;
+  --hw-s-3: 12px;
+  --hw-s-4: 16px;
+  --hw-s-5: 24px;
+  --hw-s-6: 32px;
+  --hw-s-7: 48px;
+  --hw-s-8: 64px;
+  --hw-s-9: 96px;
+  --hw-s-10: 128px;
+
+  /* ---------- Radii ---------- */
+  --hw-r-xs: 2px;
+  --hw-r-sm: 4px;
+  --hw-r-md: 8px;
+  --hw-r-lg: 16px;
+  --hw-r-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  --hw-shadow-1: 0 1px 2px rgba(26,22,20,0.04), 0 1px 1px rgba(26,22,20,0.02);
+  --hw-shadow-2: 0 6px 16px -8px rgba(26,22,20,0.10), 0 2px 4px rgba(26,22,20,0.04);
+  --hw-shadow-3: 0 24px 48px -24px rgba(26,22,20,0.18), 0 8px 16px -8px rgba(26,22,20,0.08);
+  --hw-shadow-rose: 0 24px 60px -28px rgba(155, 94, 69, 0.35);
+
+  /* ---------- Type families ---------- */
+  --hw-font-display: 'Italiana', 'Cormorant Garamond', 'Times New Roman', serif;
+  --hw-font-script:  'Dancing Script', 'Brush Script MT', cursive;
+  --hw-font-body:    'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --hw-font-mono:    ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ---------- Letter-spacing ---------- */
+  --hw-tracking-tight:   -0.01em;
+  --hw-tracking-normal:   0;
+  --hw-tracking-wide:     0.08em;
+  --hw-tracking-wider:    0.18em;
+  --hw-tracking-wider:    0.28em;
+  --hw-tracking-widest:   0.32em;
+
+  /* ---------- Motion ---------- */
+  --hw-ease:     cubic-bezier(0.22, 0.61, 0.36, 1);
+  --hw-ease-in:  cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  --hw-dur-1:   180ms;
+  --hw-dur-2:   320ms;
+  --hw-dur-3:   600ms;
+  --hw-dur-4:  1200ms;
+}
