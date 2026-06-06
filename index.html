@@ -607,7 +607,6 @@
       id="burst-video"
       src="assets/burst.mp4"
       muted
-      autoplay
       playsinline
       webkit-playsinline
       preload="auto"
@@ -796,45 +795,22 @@
 
   // ── Video scroll-scrub (desktop only) ──
   (function () {
-    // CSS hides the video wrap on mobile; bail here too so the video never loads.
     if (window.matchMedia('(max-width: 900px)').matches) return;
 
     var wrap  = document.getElementById('video-scrub-wrap');
     var video = document.getElementById('burst-video');
     if (!wrap || !video) return;
 
-    var stage = wrap.querySelector('.video-scrub-stage');
-    var raf = null, targetTime = 0, settled = false;
+    var raf = null, targetTime = 0;
 
     function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-
-    // Replace video with a static dish image and collapse the scroll zone.
-    function showFallback() {
-      if (settled) return;
-      settled = true;
-      wrap.style.height = 'auto';
-      if (stage) stage.style.position = 'static';
-      var img = document.createElement('img');
-      img.src = 'assets/dish.jpg';
-      img.alt = '';
-      if (video.parentNode) video.parentNode.replaceChild(img, video);
-    }
-
-    // Scrubbing confirmed — wire up scroll handler.
-    function initScrub() {
-      if (settled) return;
-      settled = true;
-      video.currentTime = 0;
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    }
 
     function applyTime() {
       raf = null;
       if (video.readyState >= 2) video.currentTime = targetTime;
     }
 
-    function onScroll() {
+    function scrubOnScroll() {
       if (!video.duration) return;
       var rect  = wrap.getBoundingClientRect();
       var total = wrap.offsetHeight - window.innerHeight;
@@ -842,39 +818,14 @@
       if (!raf) raf = requestAnimationFrame(applyTime);
     }
 
-    // autoplay triggers data loading on iOS; pause immediately so no frame plays.
-    video.addEventListener('play', function onPlay() {
-      video.removeEventListener('play', onPlay);
-      video.pause();
-    });
-
-    video.addEventListener('error', function () {
-      clearTimeout(metaTimer);
-      showFallback();
-    });
-
-    // Fall back if metadata never arrives (iOS ignores preload without autoplay).
-    var metaTimer = setTimeout(showFallback, 5000);
+    // Keep video paused — scroll drives currentTime directly.
+    video.pause();
+    video.addEventListener('play', function () { video.pause(); });
 
     video.addEventListener('loadedmetadata', function () {
-      clearTimeout(metaTimer);
-
-      // Verify seeking actually works: try a tiny seek and wait for seeked.
-      // iOS may have metadata but no buffered frames — seeked timeout reveals this.
-      var seekTimer = setTimeout(showFallback, 1500);
-
-      video.addEventListener('seeked', function onSeeked() {
-        clearTimeout(seekTimer);
-        video.removeEventListener('seeked', onSeeked);
-        initScrub();
-      });
-
-      try {
-        video.currentTime = 0.001;
-      } catch (e) {
-        clearTimeout(seekTimer);
-        showFallback();
-      }
+      video.currentTime = 0;
+      window.addEventListener('scroll', scrubOnScroll, { passive: true });
+      scrubOnScroll();
     });
   })();
 </script>
